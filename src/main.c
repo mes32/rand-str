@@ -21,7 +21,7 @@ const char* randomString(size_t length) {
         int randomIndex = rand() % charsetSize;
         randomString[i] = charset[randomIndex];
     }
-    randomString[length] = 0;
+    randomString[length] = '\0';
 
     return randomString;
 }
