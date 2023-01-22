@@ -1,3 +1,4 @@
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,16 +8,18 @@ const static int MY_SEED = 0;
 // const static char LOWERCASE_LETTERS[] = "abc";
 
 void printUsage() {
-    printf("Usage: rand-str [-h] [-l length] [-c count] [-a] [-A] [-n] [-s] [-xa]\n");
+    printf("Usage: rand-str [-h] [-l length] [-n count] [--lowercase true/false] [--uppercase true/false] [--numbers true/false] [--symbols true/false] [--ambiguous true/false]\n");
     printf("  Options:\n");
     printf("    -h: Print usage screen\n");
     printf("    -l length: Number of characters in random string (default 16)\n");
-    printf("    -c count: How many random strings to generate per run (default 1)\n");
-    printf("    -a: Include lowercase letters\n");
-    printf("    -A: Include uppercase letters\n");
-    printf("    -n: Include numbers\n");
-    printf("    -s: Include symbols\n");
-    printf("    -xa: Exclude visually ambiguous characters\n");
+    printf("    -n count: How many random strings to generate per run (default 1)\n");
+    printf("\n");
+    printf("  Note: If any of the following configuration flags are present, the others become false by default. In none of these flags are present, then the default configuration is to include lowercase letters, uppercase letters, numbers, symbols, and to exclude visually ambiguous characters.\n");
+    printf("    -c, --lowercase true/false: Include lowercase letters\n");
+    printf("    -C, --uppercase true/false: Include uppercase letters\n");
+    printf("    -#, --numbers true/false: Include numbers\n");
+    printf("    -$, --symbols true/false: Include symbols\n");
+    printf("    -a, --ambiguous true/false: Include visually ambiguous characters\n");
     exit(0);
 }
 
@@ -41,12 +44,46 @@ const char* randomString(size_t length) {
 }
 
 int main(int argc, char** argv) {
-    for(int i = 0; i < argc; i++) {
-        printf("argv[%d] = %s\n", i, argv[i]);
-    }
+    int option;
 
-    if (argv[1] && strcmp(argv[1], "-h") == 0) {
-        printUsage();
+    struct option long_options[] = {
+        {"lowercase", required_argument, 0, 'c'},
+        {"uppercase", required_argument, 0, 'C'},
+        {"numbers", required_argument, 0, '#'},
+        {"symbols", required_argument, 0, '$'},
+        {"ambiguous", required_argument, 0, 'a'},
+        {0, 0, 0, 0}
+    };
+
+    while ((option = getopt_long(argc, argv, "hl:n:c:C:#:$:a:", long_options, NULL)) != -1) {
+        switch (option) {
+            case 'h':
+                printUsage();
+                return 0;
+            case 'l':
+                printf("Flag -l %s\n", optarg);
+                break;
+            case 'n':
+                printf("Flag -n %s\n", optarg);
+                break;
+            case 'c':
+                printf("Flag -c %s\n", optarg);
+                break;
+            case 'C':
+                printf("Flag -C %s\n", optarg);
+                break;
+            case '#':
+                printf("Flag -# %s\n", optarg);
+                break;
+            case '$':
+                printf("Flag -$ %s\n", optarg);
+                break;
+            case 'a':
+                printf("Flag -a %s\n", optarg);
+                break;
+            default:
+                printf("Invalid option\n");
+        }
     }
 
     printf("%s\n", randomString(10));
