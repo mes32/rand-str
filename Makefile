@@ -1,6 +1,6 @@
 # Define compiler and compiler options
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -O2
+CFLAGS = -std=c11 -Wall -Wextra -Werror -O2 -march=native -g
 
 # Define build rules
 all: ./bin/rand-str
