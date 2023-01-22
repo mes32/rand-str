@@ -20,8 +20,11 @@ void printUsage() {
     printf("    -#, --numbers true/false: Include numbers\n");
     printf("    -$, --symbols true/false: Include symbols\n");
     printf("    -a, --ambiguous true/false: Include visually ambiguous characters\n");
-    exit(0);
 }
+
+// bool isFalsy(char* string) {
+//     return false;
+// }
 
 const char* randomString(size_t length) {
     char charset[] = "abc";
@@ -44,6 +47,8 @@ const char* randomString(size_t length) {
 }
 
 int main(int argc, char** argv) {
+    int stringLength = 16;
+
     int option;
 
     struct option long_options[] = {
@@ -59,9 +64,13 @@ int main(int argc, char** argv) {
         switch (option) {
             case 'h':
                 printUsage();
-                return 0;
+                exit(0);
             case 'l':
-                printf("Flag -l %s\n", optarg);
+                if (sscanf (optarg, "%i", &stringLength) != 1) {
+                    printf("rand-str: option requires an argument of type int -- l\n");
+                    printf("Invalid input, use option -h to see valid usage and options.\n");
+                    exit(1);
+                }
                 break;
             case 'n':
                 printf("Flag -n %s\n", optarg);
@@ -82,10 +91,11 @@ int main(int argc, char** argv) {
                 printf("Flag -a %s\n", optarg);
                 break;
             default:
-                printf("Invalid option\n");
+                printf("Invalid input, use option -h to see valid usage and options.\n");
+                exit(1);
         }
     }
 
-    printf("%s\n", randomString(10));
+    printf("%s\n", randomString(stringLength));
     return 0;
 }

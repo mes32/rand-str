@@ -1,6 +1,8 @@
 # rand-str
 
-## Setup
+A command line tool for generating random strings
+
+## Setup and Run
 
 ```bash
 # Clone this repository
@@ -15,7 +17,7 @@ make all
 ```
 
 ## Usage and Options
-```bash
+```
 Usage: rand-str [-h] [-l length] [-n count] [--lowercase true/false] [--uppercase true/false] [--numbers true/false] [--symbols true/false] [--ambiguous true/false]
   Options:
     -h: Print usage screen
