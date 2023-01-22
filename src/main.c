@@ -8,6 +8,7 @@ const static int MY_SEED = 0;
 // const static char LOWERCASE_LETTERS[] = "abc";
 
 void printUsage() {
+    // TODO: Consider combining multiple printf's into one
     printf("Usage: rand-str [-h] [-l length] [-n count] [--lowercase true/false] [--uppercase true/false] [--numbers true/false] [--symbols true/false] [--ambiguous true/false]\n");
     printf("  Options:\n");
     printf("    -h: Print usage screen\n");
@@ -22,6 +23,8 @@ void printUsage() {
     printf("    -a, --ambiguous true/false: Include visually ambiguous characters\n");
 }
 
+// TODO: Use this function to be permissive with accepted arguments
+// Only consider {"false", "0", "off", "null", "nil"} to be falsy (case insensitive) and consider all other inputs as true
 // bool isFalsy(char* string) {
 //     return false;
 // }
@@ -48,6 +51,7 @@ const char* randomString(size_t length) {
 
 int main(int argc, char** argv) {
     int stringLength = 16;
+    int numberOfStrings = 1;
 
     int option;
 
@@ -66,14 +70,21 @@ int main(int argc, char** argv) {
                 printUsage();
                 exit(0);
             case 'l':
-                if (sscanf (optarg, "%i", &stringLength) != 1) {
+                if (sscanf (optarg, "%i", &stringLength) != 1 || stringLength < 0) {
+                    // TODO: Try to find a more systematic/dry way to handle these scanning error messages
+                    // TODO: Print these errors to the error stream
+                    // TODO: Fix error messages for less than 0
                     printf("rand-str: option requires an argument of type int -- l\n");
                     printf("Invalid input, use option -h to see valid usage and options.\n");
                     exit(1);
                 }
                 break;
             case 'n':
-                printf("Flag -n %s\n", optarg);
+                if (sscanf (optarg, "%i", &numberOfStrings) != 1 || numberOfStrings < 0) {
+                    printf("rand-str: option requires an argument of type int -- n\n");
+                    printf("Invalid input, use option -h to see valid usage and options.\n");
+                    exit(1);
+                }
                 break;
             case 'c':
                 printf("Flag -c %s\n", optarg);
@@ -96,6 +107,8 @@ int main(int argc, char** argv) {
         }
     }
 
-    printf("%s\n", randomString(stringLength));
+    for (int i = 0; i < numberOfStrings; i++) {
+        printf("%s\n", randomString(stringLength));
+    }
     return 0;
 }
