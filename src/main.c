@@ -1,11 +1,26 @@
 #include <getopt.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 const static int MY_SEED = 0; 
+// TODO: Make these arrays complete
 // const static char LOWERCASE_LETTERS[] = "abc";
+// const static char UPPERCASE_LETTERS[] = "ABC";
+// const static char NUMBERS[] = "123";
+// const static char SYMBOLS[] = "@#$";
+// const static char AMBIGUOUS_CHARACTERS[] = "o0O";
+
+int stringLength = 16;
+int numberOfStrings = 1;
+bool hasSetIncludes = false;
+bool includeLowercase = true;
+bool includeUppercase = true;
+bool includeNumbers = true;
+bool includeSymbols = true;
+bool includeAmbiguous = false;
 
 void printUsage() {
     // TODO: Consider combining multiple printf's into one
@@ -25,14 +40,26 @@ void printUsage() {
 
 // TODO: Use this function to be permissive with accepted arguments
 // Only consider {"false", "0", "off", "null", "nil"} to be falsy (case insensitive) and consider all other inputs as true
-// bool isFalsy(char* string) {
-//     return false;
-// }
+bool isTruthy(char* str) {
+    return strcmp("false", str); // || strcmp("0", str) || strcmp("off", str) || strcmp("null", str) || strcmp("nil", str);
+}
+
+void setIncludesToFalse() {
+    if (!hasSetIncludes) {
+        hasSetIncludes = true;
+        includeLowercase = false;
+        includeUppercase = false;
+        includeNumbers = false;
+        includeSymbols = false;
+        includeAmbiguous = false;
+    }
+}
 
 const char* randomString(size_t length) {
     char charset[] = "abc";
     size_t charsetSize = strlen(charset);
 
+    // TODO: only call srand once
     srand(time(NULL) + MY_SEED);
 
     char* randomString = malloc(sizeof(char) * (length + 1));
@@ -50,9 +77,6 @@ const char* randomString(size_t length) {
 }
 
 int main(int argc, char** argv) {
-    int stringLength = 16;
-    int numberOfStrings = 1;
-
     int option;
 
     struct option long_options[] = {
@@ -87,19 +111,44 @@ int main(int argc, char** argv) {
                 }
                 break;
             case 'c':
-                printf("Flag -c %s\n", optarg);
+                setIncludesToFalse();
+                if (isTruthy(optarg)) {
+                    includeLowercase = true;
+                } else {
+                    includeLowercase = false;
+                }
                 break;
             case 'C':
-                printf("Flag -C %s\n", optarg);
+                setIncludesToFalse();
+                if (isTruthy(optarg)) {
+                    includeUppercase = true;
+                } else {
+                    includeUppercase = false;
+                }
                 break;
             case '#':
-                printf("Flag -# %s\n", optarg);
+                setIncludesToFalse();
+                if (isTruthy(optarg)) {
+                    includeNumbers = true;
+                } else {
+                    includeNumbers = false;
+                }
                 break;
             case '$':
-                printf("Flag -$ %s\n", optarg);
+                setIncludesToFalse();
+                if (isTruthy(optarg)) {
+                    includeSymbols = true;
+                } else {
+                    includeSymbols = false;
+                }
                 break;
             case 'a':
-                printf("Flag -a %s\n", optarg);
+                setIncludesToFalse();
+                if (isTruthy(optarg)) {
+                    includeAmbiguous = true;
+                } else {
+                    includeAmbiguous = false;
+                }
                 break;
             default:
                 printf("Invalid input, use option -h to see valid usage and options.\n");
@@ -107,7 +156,15 @@ int main(int argc, char** argv) {
         }
     }
 
+    // TODO: Print the status of include flags for now
+    printf("includeLowercase: %s\n", includeLowercase == 0 ? "false" : "true");
+    printf("includeUppercase: %s\n", includeUppercase == 0 ? "false" : "true");
+    printf("includeNumbers  : %s\n", includeNumbers == 0 ? "false" : "true");
+    printf("includeSymbols  : %s\n", includeSymbols == 0 ? "false" : "true");
+    printf("includeAmbiguous: %s\n", includeAmbiguous == 0 ? "false" : "true");
+
     for (int i = 0; i < numberOfStrings; i++) {
+        // TODO: Fix bug where numberOfStrings > 1 produces the same string
         printf("%s\n", randomString(stringLength));
     }
     return 0;
